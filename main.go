@@ -6,11 +6,10 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	nexproto "github.com/PretendoNetwork/nex-protocols-go"
-	nexsecure "github.com/PretendoNetwork/nex-protocols-common-go/secure-connection"
 )
 
 var nexServer *nex.Server
-var secureServer *nexproto.SecureProtocol
+var secureServer *nexproto.SecureBadgeArcadeProtocol
 
 func main() {
 	nexServer = nex.NewServer()
@@ -31,27 +30,15 @@ func main() {
 
 	nexServer.On("Kick", func(packet *nex.PacketV1) {
 		fmt.Println("Leaving")
-		deletePlayerSession(packet.Sender().PID())
 	})
 
-	secureServer := nexsecure.NewCommonSecureConnectionProtocol(nexServer)
+	nexServer.On("Connect", connect)
+
+	secureServer := nexproto.NewSecureBadgeArcadeProtocol(nexServer)
 	dataStoreBadgeArcadePrococolServer := nexproto.NewDataStoreBadgeArcadeProtocol(nexServer)
 	shopBadgeArcadePrococolServer := nexproto.NewShopBadgeArcadeProtocol(nexServer)
-	_ = shopBadgeArcadePrococolServer
 
-	secureServer.AddConnection(func(rvcid uint32, urls []string, ip, port string) {
-		pid := nexServer.FindClientFromConnectionID(rvcid).PID()
-		addPlayerSession(pid, urls, ip, port)
-	})
-	secureServer.UpdateConnection(func(rvcid uint32, urls []string, ip, port string) {
-		pid := nexServer.FindClientFromConnectionID(rvcid).PID()
-		updatePlayerSessionAll(pid, urls, ip, port)
-	})
-	secureServer.DoesConnectionExist(func(rvcid uint32) bool {
-		pid := nexServer.FindClientFromConnectionID(rvcid).PID()
-		return doesSessionExist(pid)
-	})
-
+	secureServer.Register(register)
 	secureServer.GetMaintenanceStatus(getMaintenanceStatus)
 
 	dataStoreBadgeArcadePrococolServer.GetPersistenceInfo(getPersistenceInfo)

@@ -19,8 +19,8 @@ func getMaintenanceStatus(err error, client *nex.Client, callID uint32) {
 
 	rmcResponseBody := rmcResponseStream.Bytes()
 
-	rmcResponse := nex.NewRMCResponse(nexproto.SecureProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.SecureMethodGetMaintenanceStatus, rmcResponseBody)
+	rmcResponse := nex.NewRMCResponse(nexproto.SecureBadgeArcadeProtocolID, callID)
+	rmcResponse.SetSuccess(nexproto.SecureBadgeArcadeMethodGetMaintenanceStatus, rmcResponseBody)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 
