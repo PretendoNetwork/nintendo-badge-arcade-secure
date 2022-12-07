@@ -9,32 +9,54 @@ import (
 
 func register(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL) {
 	localStation := stationUrls[0]
+	localStationURL := localStation.EncodeToString()
+	pidConnectionID := uint32(nexServer.ConnectionIDCounter().Increment())
+	client.SetConnectionID(pidConnectionID)
+	client.SetLocalStationUrl(localStationURL)
 
 	address := client.Address().IP.String()
 	port := strconv.Itoa(client.Address().Port)
+	natf := "0"
+	natm := "0"
+	type_ := "3"
 
 	localStation.SetAddress(address)
 	localStation.SetPort(port)
+	localStation.SetNatf(natf)
+	localStation.SetNatm(natm)
+	localStation.SetType(type_)
 
-	localStationURL := localStation.EncodeToString()
+	urlPublic := localStation.EncodeToString()
+
+	pid := nexServer.FindClientFromConnectionID(pidConnectionID).PID()
+
+	if !doesSessionExist(pid) {
+		addPlayerSession(pid, []string{localStationURL, urlPublic}, address, port)
+	} else {
+		updatePlayerSessionAll(pid, []string{localStationURL, urlPublic}, address, port)
+	}
+
+	retval := nex.NewResultSuccess(nex.Errors.Core.Unknown)
 
 	rmcResponseStream := nex.NewStreamOut(nexServer)
 
-	rmcResponseStream.WriteUInt32LE(0x10001) // Success
-	rmcResponseStream.WriteUInt32LE(nexServer.ConnectionIDCounter().Increment())
-	rmcResponseStream.WriteString(localStationURL)
+	rmcResponseStream.WriteResult(retval) // Success
+	rmcResponseStream.WriteUInt32LE(pidConnectionID)
+	rmcResponseStream.WriteString(urlPublic)
 
 	rmcResponseBody := rmcResponseStream.Bytes()
 
 	// Build response packet
-	rmcResponse := nex.NewRMCResponse(nexproto.SecureProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.SecureMethodRegisterEx, rmcResponseBody)
+	rmcResponse := nex.NewRMCResponse(nexproto.SecureBadgeArcadeProtocolID, callID)
+	rmcResponse.SetSuccess(nexproto.SecureMethodRegister, rmcResponseBody)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 
-	responsePacket, _ := nex.NewPacketV1(client, nil)
+	var responsePacket nex.PacketInterface
 
+	responsePacket, _ = nex.NewPacketV1(client, nil)
 	responsePacket.SetVersion(1)
+
 	responsePacket.SetSource(0xA1)
 	responsePacket.SetDestination(0xAF)
 	responsePacket.SetType(nex.DataPacket)

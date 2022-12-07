@@ -30,6 +30,7 @@ func main() {
 
 	nexServer.On("Kick", func(packet *nex.PacketV1) {
 		fmt.Println("Leaving")
+		deletePlayerSession(packet.Sender().PID())
 	})
 
 	nexServer.On("Connect", connect)

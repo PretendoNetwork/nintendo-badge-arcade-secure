@@ -1,9 +1,7 @@
-github.com/DaniElectra/nex-protocols-go v0.0.0-20221202202024-f420144d1ba5 h1:4Q4Y9ab5F1t5sqbvBpsE8sd1u++wyJeI4IwYgcLhnkQ=
-github.com/DaniElectra/nex-protocols-go v0.0.0-20221202202024-f420144d1ba5/go.mod h1:rmJrhlkNr8wuPqjgR1ozjTdqg4A8zG3bu0XvD4Aoz7Q=
+github.com/DaniElectra/nex-protocols-go v0.0.0-20221206155712-b91e5b3b5fc7 h1:geO5PYIzTRNC1r0Koe0n0uUjsPjIdkDD9mPc1xW6yEo=
+github.com/DaniElectra/nex-protocols-go v0.0.0-20221206155712-b91e5b3b5fc7/go.mod h1:rmJrhlkNr8wuPqjgR1ozjTdqg4A8zG3bu0XvD4Aoz7Q=
 github.com/PretendoNetwork/nex-go v1.0.10 h1:kZF2yppUYY8S06B/5UsmBBZvWBflefKS/CMmoOJTJig=
 github.com/PretendoNetwork/nex-go v1.0.10/go.mod h1:Bx2ONeSefnbJyE0IDIwGopxrjRrnszOV/uQv74Cx+m0=
-github.com/PretendoNetwork/nex-protocols-common-go v1.0.12 h1:lNLQMBl6QeftbjR49aw9UU7Lc3lGDhDAh4lNXXPCCAE=
-github.com/PretendoNetwork/nex-protocols-common-go v1.0.12/go.mod h1:VVnq55FgEePO49oaoCqFQzgwDnxKiatKn8hgSdXeA9I=
 github.com/PretendoNetwork/plogger-go v1.0.2 h1:vWKEnEmJJzYwqLxLyiSsAvCrZV6qnnu/a0GQOjIfzY0=
 github.com/PretendoNetwork/plogger-go v1.0.2/go.mod h1:7kD6M4vPq1JL4LTuPg6kuB1OvUBOwQOtAvTaUwMbwvU=
 github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932 h1:mXoPYz/Ul5HYEDvkta6I8/rnYM5gSdSV2tJ6XbZuEtY=
