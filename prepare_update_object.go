@@ -34,7 +34,7 @@ func prepareUpdateObject(err error, client *nex.Client, callID uint32, param *ne
 	fieldSignature.Value = "signature" // TODO
 
 	pReqUpdateInfo.Version = dataVersion + 1
-	pReqUpdateInfo.Url = fmt.Sprintf("http://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
+	pReqUpdateInfo.Url = fmt.Sprintf("https://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
 	pReqUpdateInfo.RequestHeaders = []*nexproto.DataStoreKeyValue{}
 	pReqUpdateInfo.FormFields = []*nexproto.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}
 	pReqUpdateInfo.RootCaCert = []byte{}

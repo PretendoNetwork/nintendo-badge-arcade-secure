@@ -14,7 +14,7 @@ func prepareGetObject(err error, client *nex.Client, callID uint32, dataStorePre
 	dataVersion := getVersionByDataID(dataStorePrepareGetParam.DataID)
 	dataSize := getSizeByDataID(dataStorePrepareGetParam.DataID)
 
-	pReqGetInfo.URL = fmt.Sprintf("http://%s.%s/%s/%011d-%05d", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"), os.Getenv("DATASTORE_DATA_PATH"), dataStorePrepareGetParam.DataID, dataVersion)
+	pReqGetInfo.URL = fmt.Sprintf("https://%s.%s/%s/%011d-%05d", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"), os.Getenv("DATASTORE_DATA_PATH"), dataStorePrepareGetParam.DataID, dataVersion)
 	pReqGetInfo.RequestHeaders = []*nexproto.DataStoreKeyValue{}
 	pReqGetInfo.Size = dataSize
 	pReqGetInfo.RootCA = []byte{}
