@@ -8,18 +8,21 @@ import (
 	nexproto "github.com/PretendoNetwork/nex-protocols-go"
 )
 
-func prepareUpdateObject(err error, client *nex.Client, callID uint32, param *nexproto.DataStorePrepareUpdateParam) {
-	dataID := param.DataID
+func preparePostObject(err error, client *nex.Client, callID uint32, param *nexproto.DataStorePreparePostParam) {
+	pid := client.PID()
+	var slot uint16 = 0
+
+	dataID := getDataStorePersistenceInfo(pid, slot)
 	dataSize := param.Size
-	dataVersion := getVersionByDataID(dataID)
+	var dataVersion uint32 = 1
 
 	// TODO: This isn't a safe way for handling this. If the S3 server is down and the user quits,
 	// it may lead to an incomplete save and cause errors!
-	updateUserPlayInfoSize(dataID, dataSize)
+	postUserPlayInfo(dataID, dataVersion, dataSize)
 	
-	pReqUpdateInfo := nexproto.NewDataStoreReqUpdateInfo()
+	pReqPostInfo := nexproto.NewDataStoreReqPostInfo()
 
-	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, dataVersion + 1)
+	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, dataVersion)
 
 	fieldKey := nexproto.NewDataStoreKeyValue()
 	fieldKey.Key = "key"
@@ -33,20 +36,19 @@ func prepareUpdateObject(err error, client *nex.Client, callID uint32, param *ne
 	fieldSignature.Key = "signature"
 	fieldSignature.Value = "signature" // TODO
 
-	pReqUpdateInfo.Version = dataVersion + 1
-	pReqUpdateInfo.Url = fmt.Sprintf("http://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
-	pReqUpdateInfo.RequestHeaders = []*nexproto.DataStoreKeyValue{}
-	pReqUpdateInfo.FormFields = []*nexproto.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}
-	pReqUpdateInfo.RootCaCert = []byte{}
+	pReqPostInfo.URL = fmt.Sprintf("http://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
+	pReqPostInfo.RequestHeaders = []*nexproto.DataStoreKeyValue{}
+	pReqPostInfo.FormFields = []*nexproto.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}
+	pReqPostInfo.RootCACert = []byte{}
 
 	rmcResponseStream := nex.NewStreamOut(nexServer)
 
-	rmcResponseStream.WriteStructure(pReqUpdateInfo)
+	rmcResponseStream.WriteStructure(pReqPostInfo)
 
 	rmcResponseBody := rmcResponseStream.Bytes()
 
 	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.DataStoreMethodPrepareUpdateObject, rmcResponseBody)
+	rmcResponse.SetSuccess(nexproto.DataStoreMethodPreparePostObject, rmcResponseBody)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 

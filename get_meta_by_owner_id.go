@@ -19,7 +19,10 @@ func getMetaByOwnerId(err error, client *nex.Client, callID uint32, param *nexpr
 	for i, _ := range param.OwnerIDs {
 		switch param.DataTypes[i] {
 		case 100: // Free Play Data
-			pMetaInfo = append(pMetaInfo, freePlayDataToDataStoreMetaInfo(param.OwnerIDs[i], param.DataTypes[i]))
+			freePlayDataMetaInfo := freePlayDataToDataStoreMetaInfo(param.OwnerIDs[i], param.DataTypes[i])
+			if freePlayDataMetaInfo != nil {
+				pMetaInfo = append(pMetaInfo, freePlayDataMetaInfo)
+			}
 		default:
 			fmt.Println("WARNING: Unknown DataType: %d", param.DataTypes[i])
 		}

@@ -76,19 +76,11 @@ func connectCassandra() {
 	if err := cassandraClusterSession.Query(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.persistence_info (
 			data_id bigint PRIMARY KEY,
 			pid int,
-			slot int
+			slot smallint
 		)`).Exec(); err != nil {
 		fmt.Println("pretendo_badge_arcade.persistence_info")
 		log.Fatal(err)
-	}
-
-	if err := cassandraClusterSession.Query(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.generator_last_id (
-		node_id int PRIMARY KEY,
-		last_id int
-	)`).Exec(); err != nil {
-		fmt.Println("pretendo_badge_arcade.generator_last_id")
-		log.Fatal(err)
-	}
+	}	
 
 	if err := cassandraClusterSession.Query(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.user_play_info (
 		data_id bigint PRIMARY KEY,
@@ -135,21 +127,21 @@ func createKeyspace(keyspace string) {
 
 func getDataStorePersistenceInfo(ownerID uint32, persistenceSlotID uint16) uint64 {
 	var dataID uint64
-	_ = cassandraClusterSession.Query(`SELECT data_id FROM pretendo_badge_arcade.persistence_info WHERE pid=?, slot=?`, ownerID, persistenceSlotID).Scan(&dataID)
+	_ = cassandraClusterSession.Query(`SELECT data_id FROM pretendo_badge_arcade.persistence_info WHERE pid=? AND slot=? ALLOW FILTERING`, ownerID, persistenceSlotID).Scan(&dataID)
 
 	return dataID
 }
 
 func getVersionByDataID(dataID uint64) uint32 {
 	var version uint32
-	_ = cassandraClusterSession.Query(`SELECT version FROM pretendo_badge_arcade.user_play_info WHERE data_id=?`, dataID).Scan(&version)
+	_ = cassandraClusterSession.Query(`SELECT version FROM pretendo_badge_arcade.user_play_info WHERE data_id=? ALLOW FILTERING`, dataID).Scan(&version)
 
 	return version
 }
 
 func getSizeByDataID(dataID uint64) uint32 {
 	var size uint32
-	_ = cassandraClusterSession.Query(`SELECT size FROM pretendo_badge_arcade.user_play_info WHERE data_id=?`, dataID).Scan(&size)
+	_ = cassandraClusterSession.Query(`SELECT size FROM pretendo_badge_arcade.user_play_info WHERE data_id=? ALLOW FILTERING`, dataID).Scan(&size)
 
 	return size
 }
@@ -162,21 +154,70 @@ func getFreePlayDataMetaInfoByOwnerID(ownerID uint32) (uint64, []byte, uint64, u
 	var period uint16
 	var flag uint32
 	var referredTime uint64
-	_ = cassandraClusterSession.Query(`SELECT data_id, meta_binary, created_time, updated_time, period, flag, referred_time FROM pretendo_badge_arcade.free_play_data WHERE owner_id=?`, ownerID).Scan(&dataID, &metaBinary, &createdTime, &updatedTime, &period, &flag, &referredTime)
+	_ = cassandraClusterSession.Query(`SELECT data_id, meta_binary, created_time, updated_time, period, flag, referred_time FROM pretendo_badge_arcade.free_play_data WHERE owner_id=? ALLOW FILTERING`, ownerID).Scan(&dataID, &metaBinary, &createdTime, &updatedTime, &period, &flag, &referredTime)
 
 	return dataID, metaBinary, createdTime, updatedTime, period, flag, referredTime
 }
 
+func postFreePlayDataMetaInfo(dataID uint64, ownerID uint32, metaBinary []byte, createdTime uint64, period uint16, flag uint32) {
+	_ = cassandraClusterSession.Query(`INSERT INTO pretendo_badge_arcade.free_play_data(
+		data_id,
+		owner_id,
+		meta_binary,
+		created_time,
+		updated_time,
+		period,
+		flag,
+		referred_time
+	)
+	VALUES (
+		?,
+		?,
+		?,
+		?,
+		?,
+		?,
+		?,
+		?
+	) IF NOT EXISTS`, dataID, ownerID, metaBinary, createdTime, createdTime, period, flag, createdTime).Exec()
+}
+
+func postPersistenceInfo(dataID uint64, ownerID uint32, slot uint16) {
+	_ = cassandraClusterSession.Query(`INSERT INTO pretendo_badge_arcade.persistence_info(
+		data_id,
+		pid,
+		slot
+	)
+	VALUES (
+		?,
+		?,
+		?
+	) IF NOT EXISTS`, dataID, ownerID, slot).Exec()
+}
+
+func postUserPlayInfo(dataID uint64, version uint32, size uint32) {
+	_ = cassandraClusterSession.Query(`INSERT INTO pretendo_badge_arcade.user_play_info(
+		data_id,
+		version,
+		size
+	)
+	VALUES (
+		?,
+		?,
+		?
+	) IF NOT EXISTS`, dataID, version, size).Exec()
+}
+
 func updateFreePlayDataMetaBinary(dataID uint64, metaBinary []byte, updatedTime uint64) {
-	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.free_play_data SET meta_binary=?, updated_time=? WHERE data_id=?`, metaBinary, updatedTime, dataID).Exec()
+	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.free_play_data SET meta_binary=?, updated_time=? WHERE data_id=? ALLOW FILTERING`, metaBinary, updatedTime, dataID).Exec()
 }
 
 func updateUserPlayInfoSize(dataID uint64, size uint32) {
-	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET size=? WHERE data_id=?`, size, dataID).Exec()
+	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET size=? WHERE data_id=? ALLOW FILTERING`, size, dataID).Exec()
 }
 
 func updateUserPlayInfoVersion(dataID uint64, version uint32) {
-	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET version=? WHERE data_id=?`, version, dataID).Exec()
+	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET version=? WHERE data_id=? ALLOW FILTERING`, version, dataID).Exec()
 }
 
 //////////////////////////////

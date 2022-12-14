@@ -6,9 +6,13 @@ import (
 )
 
 func freePlayDataToDataStoreMetaInfo(ownerID uint32, dataType uint16) *nexproto.DataStoreMetaInfo {
-	metaInfo := nexproto.NewDataStoreMetaInfo()
-
 	dataID, metaBinary, createdTime, updatedTime, period, flag, referredTime := getFreePlayDataMetaInfoByOwnerID(ownerID)
+
+	if dataID == 0 {
+		return nil
+	}
+
+	metaInfo := nexproto.NewDataStoreMetaInfo()
 
 	metaInfo.DataID = dataID
 	metaInfo.OwnerID = ownerID
@@ -17,7 +21,7 @@ func freePlayDataToDataStoreMetaInfo(ownerID uint32, dataType uint16) *nexproto.
 	metaInfo.DataType = dataType
 	metaInfo.MetaBinary = metaBinary
 	metaInfo.Permission = nexproto.NewDataStorePermission()
-	metaInfo.Permission.Permission = 5 // Unknown
+	metaInfo.Permission.Permission = 0 // Unknown
 	metaInfo.Permission.RecipientIds = []uint32{}
 	metaInfo.DelPermission = nexproto.NewDataStorePermission()
 	metaInfo.DelPermission.Permission = 3 // Unknown
@@ -35,6 +39,14 @@ func freePlayDataToDataStoreMetaInfo(ownerID uint32, dataType uint16) *nexproto.
 	metaInfo.Ratings = []*nexproto.DataStoreRatingInfoWithSlot{}
 
 	return metaInfo
+}
+
+func dataStorePostParamToFreePlayData(ownerID uint32, metaInfo *nexproto.DataStorePreparePostParam) {
+	dateTime := nex.NewDateTime(0)
+	createdTime := dateTime.Now()
+
+	// We are setting the PID as the Data ID, as it is easier to handle
+	postFreePlayDataMetaInfo(uint64(ownerID), ownerID, metaInfo.MetaBinary, createdTime, metaInfo.Period, metaInfo.Flag)
 }
 
 func changeFreePlayDataMeta(dataID uint64, metaBinary []byte) {

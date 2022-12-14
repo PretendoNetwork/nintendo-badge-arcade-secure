@@ -3,7 +3,7 @@ module badge-arcade-secure
 go 1.19
 
 require (
-	github.com/PretendoNetwork/nex-go v1.0.10
+	github.com/PretendoNetwork/nex-go v1.0.11-0.20221213205742-3b717bdfee49
 	github.com/PretendoNetwork/nex-protocols-go v1.0.11
 	github.com/PretendoNetwork/plogger-go v1.0.2
 	github.com/gocql/gocql v1.3.0
@@ -34,4 +34,4 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 )
 
-replace github.com/PretendoNetwork/nex-protocols-go => github.com/DaniElectra/nex-protocols-go v0.0.0-20221206155712-b91e5b3b5fc7
+replace github.com/PretendoNetwork/nex-protocols-go => github.com/DaniElectra/nex-protocols-go v0.0.0-20221213211327-32113389198f

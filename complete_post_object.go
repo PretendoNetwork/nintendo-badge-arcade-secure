@@ -5,11 +5,11 @@ import (
 	nexproto "github.com/PretendoNetwork/nex-protocols-go"
 )
 
-func postPlayLog(err error, client *nex.Client, callID uint32, param *nexproto.ShopPostPlayLogParam) {
+func completePostObject(err error, client *nex.Client, callID uint32, param *nexproto.DataStoreCompletePostParam) {
 	// TODO: Do something with the data
-	rmcResponse := nex.NewRMCResponse(nexproto.ShopBadgeArcadeProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.ShopBadgeArcadeMethodPostPlayLog, nil)
-	rmcResponse.SetCustomID(nexproto.ShopBadgeArcadeCustomID)
+
+	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
+	rmcResponse.SetSuccess(nexproto.DataStoreMethodCompletePostObject, nil)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 

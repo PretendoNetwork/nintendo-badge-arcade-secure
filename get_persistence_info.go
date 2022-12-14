@@ -8,19 +8,24 @@ import (
 func getPersistenceInfo(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16) {
 	dataID := getDataStorePersistenceInfo(ownerID, persistenceSlotID)
 	
-	pPersistenceInfo := nexproto.NewDataStorePersistenceInfo()
-	pPersistenceInfo.OwnerID = ownerID
-	pPersistenceInfo.PersistenceSlotID = persistenceSlotID
-	pPersistenceInfo.DataID = dataID
-
-	rmcResponseStream := nex.NewStreamOut(nexServer)
-
-	rmcResponseStream.WriteListStructure(pPersistenceInfo)
-
-	rmcResponseBody := rmcResponseStream.Bytes()
-
 	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.DataStoreMethodGetPersistenceInfo, rmcResponseBody)
+
+	if dataID != 0 {
+		pPersistenceInfo := nexproto.NewDataStorePersistenceInfo()
+		pPersistenceInfo.OwnerID = ownerID
+		pPersistenceInfo.PersistenceSlotID = persistenceSlotID
+		pPersistenceInfo.DataID = dataID
+
+		rmcResponseStream := nex.NewStreamOut(nexServer)
+
+		rmcResponseStream.WriteStructure(pPersistenceInfo)
+
+		rmcResponseBody := rmcResponseStream.Bytes()
+
+		rmcResponse.SetSuccess(nexproto.DataStoreMethodGetPersistenceInfo, rmcResponseBody)
+	} else {
+		rmcResponse.SetError(nex.Errors.DataStore.NotFound)
+	}
 
 	rmcResponseBytes := rmcResponse.Bytes()
 

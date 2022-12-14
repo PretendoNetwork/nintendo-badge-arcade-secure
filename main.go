@@ -37,16 +37,21 @@ func main() {
 	nexServer.On("Connect", connect)
 
 	secureServer := nexproto.NewSecureBadgeArcadeProtocol(nexServer)
-	dataStoreBadgeArcadePrococolServer := nexproto.NewDataStoreBadgeArcadeProtocol(nexServer)
+	dataStoreBadgeArcadeProtocolServer := nexproto.NewDataStoreBadgeArcadeProtocol(nexServer)
 	shopBadgeArcadePrococolServer := nexproto.NewShopBadgeArcadeProtocol(nexServer)
 
 	secureServer.Register(register)
 	secureServer.GetMaintenanceStatus(getMaintenanceStatus)
 
-	dataStoreBadgeArcadePrococolServer.GetPersistenceInfo(getPersistenceInfo)
-	dataStoreBadgeArcadePrococolServer.PrepareGetObject(prepareGetObject)
-	dataStoreBadgeArcadePrococolServer.GetMetaByOwnerId(getMetaByOwnerId)
-	dataStoreBadgeArcadePrococolServer.ChangeMeta(changeMeta)
+	dataStoreBadgeArcadeProtocolServer.GetPersistenceInfo(getPersistenceInfo)
+	dataStoreBadgeArcadeProtocolServer.PostMetaBinary(postMetaBinary)
+	dataStoreBadgeArcadeProtocolServer.PreparePostObject(preparePostObject)
+	dataStoreBadgeArcadeProtocolServer.CompletePostObject(completePostObject)
+	dataStoreBadgeArcadeProtocolServer.PrepareGetObject(prepareGetObject)
+	dataStoreBadgeArcadeProtocolServer.GetMetaByOwnerId(getMetaByOwnerId)
+	dataStoreBadgeArcadeProtocolServer.ChangeMeta(changeMeta)
+	dataStoreBadgeArcadeProtocolServer.PrepareUpdateObject(prepareUpdateObject)
+	dataStoreBadgeArcadeProtocolServer.CompleteUpdateObject(completeUpdateObject)
 
 	shopBadgeArcadePrococolServer.PostPlayLog(postPlayLog)
 
