@@ -209,15 +209,15 @@ func postUserPlayInfo(dataID uint64, version uint32, size uint32) {
 }
 
 func updateFreePlayDataMetaBinary(dataID uint64, metaBinary []byte, updatedTime uint64) {
-	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.free_play_data SET meta_binary=?, updated_time=? WHERE data_id=? ALLOW FILTERING`, metaBinary, updatedTime, dataID).Exec()
+	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.free_play_data SET meta_binary=?, updated_time=? WHERE data_id=?`, metaBinary, updatedTime, dataID).Exec()
 }
 
 func updateUserPlayInfoSize(dataID uint64, size uint32) {
-	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET size=? WHERE data_id=? ALLOW FILTERING`, size, dataID).Exec()
+	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET size=? WHERE data_id=?`, size, dataID).Exec()
 }
 
 func updateUserPlayInfoVersion(dataID uint64, version uint32) {
-	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET version=? WHERE data_id=? ALLOW FILTERING`, version, dataID).Exec()
+	_ = cassandraClusterSession.Query(`UPDATE pretendo_badge_arcade.user_play_info SET version=? WHERE data_id=?`, version, dataID).Exec()
 }
 
 //////////////////////////////
