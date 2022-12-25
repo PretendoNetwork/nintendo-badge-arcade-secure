@@ -6,15 +6,14 @@ require (
 	github.com/PretendoNetwork/nex-go v1.0.11-0.20221213205742-3b717bdfee49
 	github.com/PretendoNetwork/nex-protocols-go v1.0.12-0.20221215201239-9920771ab0f1
 	github.com/PretendoNetwork/plogger-go v1.0.2
-	github.com/gocql/gocql v1.3.0
 	github.com/joho/godotenv v1.4.0
+	github.com/lib/pq v1.10.7
 	go.mongodb.org/mongo-driver v1.11.0
 )
 
 require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
-	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
 	github.com/jwalton/go-supportscolor v1.1.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -31,5 +30,4 @@ require (
 	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	gopkg.in/inf.v0 v0.9.1 // indirect
 )

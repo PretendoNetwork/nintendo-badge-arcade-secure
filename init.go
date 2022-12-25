@@ -14,5 +14,5 @@ func init() {
 	}
 
 	connectMongo()
-	connectCassandra()
+	connectPostgres()
 }
