@@ -4,9 +4,7 @@ The NEX secure server for Nintendo Badge Arcade.
 
 ## Current status
 
-Currently, the secure server is able to create a new account, but trying to access the catchers after the first time makes the console *crash*. Other game functionality hasn't been tested yet.  
-
-Also, the server currently doesn't work with Pretendo Network, as there are some internal game checks that report `IncompatibleBOSSData` error (at least when checking the internal game dialogue names).  
+Currently, the secure server is able to create a new account, but trying to access the catchers after the first time makes the console *crash*. There is a temporary fix available [here](https://github.com/PretendoNetwork/nex-protocols-common-go/pull/4), which solves the issue.  
 
 ## Credits
 
