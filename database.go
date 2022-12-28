@@ -114,7 +114,7 @@ func getDataStorePersistenceInfo(ownerID uint32, persistenceSlotID uint16) uint6
 func getVersionByDataID(dataID uint64) uint32 {
 	var version uint32
 	err := postgres.QueryRow(`SELECT version FROM pretendo_badge_arcade.user_play_info WHERE data_id=$1`, dataID).Scan(&version)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		log.Fatal(err)
 	}
 
@@ -202,7 +202,9 @@ func postUserPlayInfo(dataID uint64, version uint32, size uint32) {
 		$1,
 		$2,
 		$3
-	) ON CONFLICT DO NOTHING`, dataID, version, size)
+	) ON CONFLICT (data_id) DO UPDATE SET 
+	version=$2,
+	size=$3`, dataID, version, size)
 	if err != nil {
 		log.Fatal(err)
 	}

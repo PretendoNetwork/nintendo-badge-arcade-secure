@@ -14,15 +14,15 @@ func preparePostObject(err error, client *nex.Client, callID uint32, param *nexp
 
 	dataID := getDataStorePersistenceInfo(pid, slot)
 	dataSize := param.Size
-	var dataVersion uint32 = 1
+	dataVersion := getVersionByDataID(dataID)
 
 	// TODO: This isn't a safe way for handling this. If the S3 server is down and the user quits,
 	// it may lead to an incomplete save and cause errors!
-	postUserPlayInfo(dataID, dataVersion, dataSize)
+	postUserPlayInfo(dataID, dataVersion + 1, dataSize)
 	
 	pReqPostInfo := nexproto.NewDataStoreReqPostInfo()
 
-	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, dataVersion)
+	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, dataVersion + 1)
 
 	fieldKey := nexproto.NewDataStoreKeyValue()
 	fieldKey.Key = "key"
