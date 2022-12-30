@@ -7,7 +7,7 @@ import (
 
 func getMaintenanceStatus(err error, client *nex.Client, callID uint32) {
 	// TODO: Don't use hardcoded variables
-	var maintenanceStatus uint16 = 65535
+	var maintenanceStatus uint16 = 0xFFFF
 	var maintenanceTime uint32 = 0 // Time of maintenance in Unix time (I think)
 	var isSuccess bool = true
 
