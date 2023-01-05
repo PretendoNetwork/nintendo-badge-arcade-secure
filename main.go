@@ -6,12 +6,29 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	nexproto "github.com/PretendoNetwork/nex-protocols-go"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 var nexServer *nex.Server
 var secureServer *nexproto.SecureBadgeArcadeProtocol
+var s3Client *s3.S3
 
 func main() {
+	key := os.Getenv("S3_KEY")
+	secret := os.Getenv("S3_SECRET")
+
+	s3Config := &aws.Config{
+		Credentials: credentials.NewStaticCredentials(key, secret, ""),
+		Endpoint: aws.String("http://" + os.Getenv("DATASTORE_DATA_URL")),
+		Region: aws.String("us-east-1"),
+	}
+
+	newSession, _ := session.NewSession(s3Config)
+	s3Client = s3.New(newSession)
+
 	nexServer = nex.NewServer()
 	nexServer.SetPrudpVersion(1)
 	nexServer.SetPRUDPProtocolMinorVersion(3)

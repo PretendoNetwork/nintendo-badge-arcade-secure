@@ -3,6 +3,8 @@ package main
 import (
 	nex "github.com/PretendoNetwork/nex-go"
 	nexproto "github.com/PretendoNetwork/nex-protocols-go"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 func freePlayDataToDataStoreMetaInfo(ownerID uint32, dataType uint16) *nexproto.DataStoreMetaInfo {
@@ -54,4 +56,18 @@ func changeFreePlayDataMeta(dataID uint64, metaBinary []byte) {
 	updatedTime := dateTime.Now()
 
 	updateFreePlayDataMetaBinary(dataID, metaBinary, updatedTime)
+}
+
+func s3ObjectSize(bucket, key string) (uint64, error) {
+	headObj := s3.HeadObjectInput{
+		Bucket: aws.String(bucket),
+		Key: aws.String(key),
+	}
+
+	result, err := s3Client.HeadObject(&headObj)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint64(aws.Int64Value(result.ContentLength)), nil
 }

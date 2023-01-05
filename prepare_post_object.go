@@ -36,7 +36,7 @@ func preparePostObject(err error, client *nex.Client, callID uint32, param *nexp
 	fieldSignature.Key = "signature"
 	fieldSignature.Value = "signature" // TODO
 
-	pReqPostInfo.URL = fmt.Sprintf("https://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
+	pReqPostInfo.URL = fmt.Sprintf("http://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
 	pReqPostInfo.RequestHeaders = []*nexproto.DataStoreKeyValue{}
 	pReqPostInfo.FormFields = []*nexproto.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}
 	pReqPostInfo.RootCACert = []byte{}
