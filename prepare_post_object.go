@@ -13,16 +13,11 @@ func preparePostObject(err error, client *nex.Client, callID uint32, param *nexp
 	var slot uint16 = 0
 
 	dataID := getDataStorePersistenceInfo(pid, slot)
-	dataSize := param.Size
-	dataVersion := getVersionByDataID(dataID)
-
-	// TODO: This isn't a safe way for handling this. If the S3 server is down and the user quits,
-	// it may lead to an incomplete save and cause errors!
-	postUserPlayInfo(dataID, dataVersion + 1, dataSize)
+	var initialVersion uint32 = 1
 	
 	pReqPostInfo := nexproto.NewDataStoreReqPostInfo()
 
-	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, dataVersion + 1)
+	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, initialVersion)
 
 	fieldKey := nexproto.NewDataStoreKeyValue()
 	fieldKey.Key = "key"
@@ -36,6 +31,7 @@ func preparePostObject(err error, client *nex.Client, callID uint32, param *nexp
 	fieldSignature.Key = "signature"
 	fieldSignature.Value = "signature" // TODO
 
+	pReqPostInfo.DataID = dataID
 	pReqPostInfo.URL = fmt.Sprintf("http://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
 	pReqPostInfo.RequestHeaders = []*nexproto.DataStoreKeyValue{}
 	pReqPostInfo.FormFields = []*nexproto.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}

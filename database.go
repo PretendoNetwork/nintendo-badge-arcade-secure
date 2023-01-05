@@ -72,20 +72,11 @@ func connectPostgres() {
 		log.Fatal(err)
 	}
 
-	_, err = postgres.Exec(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.persistence_info (
-			data_id bigint PRIMARY KEY,
-			pid int,
-			slot smallint
-		)`)
-	if err != nil {
-		fmt.Println("pretendo_badge_arcade.persistence_info")
-		log.Fatal(err)
-	}	
-
 	_, err = postgres.Exec(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.user_play_info (
 		data_id bigint PRIMARY KEY,
-		version int,
-		size int
+		pid int,
+		slot smallint,
+		version int
 	)`)
 	if err != nil {
 		fmt.Println("pretendo_badge_arcade.user_play_info")
@@ -103,7 +94,7 @@ func connectPostgres() {
 
 func getDataStorePersistenceInfo(ownerID uint32, persistenceSlotID uint16) uint64 {
 	var dataID uint64
-	err := postgres.QueryRow(`SELECT data_id FROM pretendo_badge_arcade.persistence_info WHERE pid=$1 AND slot=$2`, ownerID, persistenceSlotID).Scan(&dataID)
+	err := postgres.QueryRow(`SELECT data_id FROM pretendo_badge_arcade.user_play_info WHERE pid=$1 AND slot=$2`, ownerID, persistenceSlotID).Scan(&dataID)
 	if err != nil && err != sql.ErrNoRows {
 		log.Fatal(err)
 	}
@@ -114,21 +105,11 @@ func getDataStorePersistenceInfo(ownerID uint32, persistenceSlotID uint16) uint6
 func getVersionByDataID(dataID uint64) uint32 {
 	var version uint32
 	err := postgres.QueryRow(`SELECT version FROM pretendo_badge_arcade.user_play_info WHERE data_id=$1`, dataID).Scan(&version)
-	if err != nil && err != sql.ErrNoRows {
-		log.Fatal(err)
-	}
-
-	return version
-}
-
-func getSizeByDataID(dataID uint64) uint32 {
-	var size uint32
-	err := postgres.QueryRow(`SELECT size FROM pretendo_badge_arcade.user_play_info WHERE data_id=$1`, dataID).Scan(&size)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return size
+	return version
 }
 
 func getFreePlayDataMetaInfoByOwnerID(ownerID uint32) (uint64, []byte, uint64, uint64, uint16, uint32, uint64)  {
@@ -174,37 +155,20 @@ func postFreePlayDataMetaInfo(dataID uint64, ownerID uint32, metaBinary []byte, 
 	}
 }
 
-func postPersistenceInfo(dataID uint64, ownerID uint32, slot uint16) {
-	var err error
-	_, err = postgres.Exec(`INSERT INTO pretendo_badge_arcade.persistence_info(
-		data_id,
-		pid,
-		slot
-	)
-	VALUES (
-		$1,
-		$2,
-		$3
-	) ON CONFLICT DO NOTHING`, dataID, ownerID, slot)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func postUserPlayInfo(dataID uint64, version uint32, size uint32) {
+func postUserPlayInfo(dataID uint64, ownerID uint32, slot uint16) {
 	var err error
 	_, err = postgres.Exec(`INSERT INTO pretendo_badge_arcade.user_play_info(
 		data_id,
-		version,
-		size
+		pid,
+		slot,
+		version
 	)
 	VALUES (
 		$1,
 		$2,
-		$3
-	) ON CONFLICT (data_id) DO UPDATE SET 
-	version=$2,
-	size=$3`, dataID, version, size)
+		$3,
+		0
+	) ON CONFLICT DO NOTHING`, dataID, ownerID, slot)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -213,14 +177,6 @@ func postUserPlayInfo(dataID uint64, version uint32, size uint32) {
 func updateFreePlayDataMetaBinary(dataID uint64, metaBinary []byte, updatedTime uint64) {
 	var err error
 	_, err = postgres.Exec(`UPDATE pretendo_badge_arcade.free_play_data SET meta_binary=$1, updated_time=$2 WHERE data_id=$3`, metaBinary, updatedTime, dataID)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func updateUserPlayInfoSize(dataID uint64, size uint32) {
-	var err error
-	_, err = postgres.Exec(`UPDATE pretendo_badge_arcade.user_play_info SET size=$1 WHERE data_id=$2`, size, dataID)
 	if err != nil {
 		log.Fatal(err)
 	}

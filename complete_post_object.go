@@ -6,7 +6,12 @@ import (
 )
 
 func completePostObject(err error, client *nex.Client, callID uint32, param *nexproto.DataStoreCompletePostParam) {
-	// TODO: Do something with the data
+	// We update the version only if the post has been successful
+	// This is done in order to prevent incomplete saves
+	if param.IsSuccess {
+		var initialVersion uint32 = 1
+		updateUserPlayInfoVersion(param.DataID, initialVersion)
+	}
 
 	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
 	rmcResponse.SetSuccess(nexproto.DataStoreMethodCompletePostObject, nil)

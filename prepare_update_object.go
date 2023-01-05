@@ -10,12 +10,7 @@ import (
 
 func prepareUpdateObject(err error, client *nex.Client, callID uint32, param *nexproto.DataStorePrepareUpdateParam) {
 	dataID := param.DataID
-	dataSize := param.Size
 	dataVersion := getVersionByDataID(dataID)
-
-	// TODO: This isn't a safe way for handling this. If the S3 server is down and the user quits,
-	// it may lead to an incomplete save and cause errors!
-	updateUserPlayInfoSize(dataID, dataSize)
 	
 	pReqUpdateInfo := nexproto.NewDataStoreReqUpdateInfo()
 
