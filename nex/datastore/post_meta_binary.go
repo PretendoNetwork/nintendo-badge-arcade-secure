@@ -18,7 +18,7 @@ func PostMetaBinary(err error, client *nex.Client, callID uint32, param *datasto
 		utility.DataStorePostParamToFreePlayData(pid, param)
 	}
 
-	database.PostUserPlayInfo(uint64(pid), pid, slot)
+	database.PostUserPlayInfo(pid, pid, slot)
 
 	rmcResponseStream := nex.NewStreamOut(globals.NEXServer)
 

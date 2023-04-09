@@ -12,7 +12,7 @@ func CompleteUpdateObject(err error, client *nex.Client, callID uint32, param *d
 	// We update the version only if the update has been successful
 	// This is done in order to prevent incomplete saves
 	if param.IsSuccess {
-		database.UpdateUserPlayInfoVersion(param.DataID, param.Version)
+		database.UpdateUserPlayInfoVersion(uint32(param.DataID), param.Version)
 	}
 
 	rmcResponse := nex.NewRMCResponse(datastore.ProtocolID, callID)

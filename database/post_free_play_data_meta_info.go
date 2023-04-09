@@ -2,7 +2,7 @@ package database
 
 import "log"
 
-func PostFreePlayDataMetaInfo(dataID uint64, ownerID uint32, metaBinary []byte, createdTime uint64, period uint16, flag uint32) {
+func PostFreePlayDataMetaInfo(dataID uint32, ownerID uint32, metaBinary []byte, createdTime uint64, period uint16, flag uint32) {
 	var err error
 	_, err = postgres.Exec(`INSERT INTO pretendo_badge_arcade.free_play_data(
 		data_id,

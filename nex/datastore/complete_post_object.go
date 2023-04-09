@@ -13,7 +13,7 @@ func CompletePostObject(err error, client *nex.Client, callID uint32, param *dat
 	// This is done in order to prevent incomplete saves
 	if param.IsSuccess {
 		var initialVersion uint32 = 1
-		database.UpdateUserPlayInfoVersion(param.DataID, initialVersion)
+		database.UpdateUserPlayInfoVersion(uint32(param.DataID), initialVersion)
 	}
 
 	rmcResponse := nex.NewRMCResponse(datastore.ProtocolID, callID)

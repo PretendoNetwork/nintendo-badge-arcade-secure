@@ -17,7 +17,7 @@ func GetPersistenceInfo(err error, client *nex.Client, callID uint32, ownerID ui
 		pPersistenceInfo := datastore.NewDataStorePersistenceInfo()
 		pPersistenceInfo.OwnerID = ownerID
 		pPersistenceInfo.PersistenceSlotID = persistenceSlotID
-		pPersistenceInfo.DataID = dataID
+		pPersistenceInfo.DataID = uint64(dataID)
 
 		rmcResponseStream := nex.NewStreamOut(globals.NEXServer)
 

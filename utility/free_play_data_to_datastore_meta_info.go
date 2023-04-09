@@ -15,7 +15,7 @@ func FreePlayDataToDataStoreMetaInfo(ownerID uint32, dataType uint16) *datastore
 
 	metaInfo := datastore.NewDataStoreMetaInfo()
 
-	metaInfo.DataID = dataID
+	metaInfo.DataID = uint64(dataID)
 	metaInfo.OwnerID = ownerID
 	metaInfo.Size = 0 // What?
 	metaInfo.Name = "FreePlayData"

@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-func GetFreePlayDataMetaInfoByOwnerID(ownerID uint32) (uint64, []byte, uint64, uint64, uint16, uint32, uint64) {
-	var dataID uint64
+func GetFreePlayDataMetaInfoByOwnerID(ownerID uint32) (uint32, []byte, uint64, uint64, uint16, uint32, uint64) {
+	var dataID uint32
 	var metaBinary []byte
 	var createdTime uint64
 	var updatedTime uint64

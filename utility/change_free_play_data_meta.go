@@ -9,5 +9,5 @@ func ChangeFreePlayDataMeta(dataID uint64, metaBinary []byte) {
 	dateTime := nex.NewDateTime(0)
 	updatedTime := dateTime.Now()
 
-	database.UpdateFreePlayDataMetaBinary(dataID, metaBinary, updatedTime)
+	database.UpdateFreePlayDataMetaBinary(uint32(dataID), metaBinary, updatedTime)
 }

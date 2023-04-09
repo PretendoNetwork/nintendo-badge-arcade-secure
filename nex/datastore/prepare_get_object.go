@@ -15,7 +15,7 @@ import (
 func PrepareGetObject(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore.DataStorePrepareGetParam) {
 	pReqGetInfo := datastore.NewDataStoreReqGetInfo()
 
-	dataVersion := database.GetVersionByDataID(dataStorePrepareGetParam.DataID)
+	dataVersion := database.GetVersionByDataID(uint32(dataStorePrepareGetParam.DataID))
 
 	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataStorePrepareGetParam.DataID, dataVersion)
 	dataSize, _ := utility.S3ObjectSize(os.Getenv("S3_BUCKET_NAME"), key)

@@ -13,7 +13,7 @@ import (
 
 func PrepareUpdateObject(err error, client *nex.Client, callID uint32, param *datastore.DataStorePrepareUpdateParam) {
 	dataID := param.DataID
-	dataVersion := database.GetVersionByDataID(dataID)
+	dataVersion := database.GetVersionByDataID(uint32(dataID))
 
 	pReqUpdateInfo := datastore.NewDataStoreReqUpdateInfo()
 

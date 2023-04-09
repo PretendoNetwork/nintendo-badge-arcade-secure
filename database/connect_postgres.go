@@ -30,7 +30,7 @@ func connectPostgres() {
 	// Create tables if missing
 
 	_, err = postgres.Exec(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.free_play_data (
-			data_id bigint PRIMARY KEY,
+			data_id int PRIMARY KEY,
 			owner_id int,
 			meta_binary bytea,
 			created_time bigint,
@@ -45,7 +45,7 @@ func connectPostgres() {
 	}
 
 	_, err = postgres.Exec(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.user_play_info (
-		data_id bigint PRIMARY KEY,
+		data_id int PRIMARY KEY,
 		pid int,
 		slot smallint,
 		version int
