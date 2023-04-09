@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"log"
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
 )
 
 func GetFreePlayDataMetaInfoByOwnerID(ownerID uint32) (uint32, []byte, uint64, uint64, uint16, uint32, uint64) {
@@ -15,7 +15,7 @@ func GetFreePlayDataMetaInfoByOwnerID(ownerID uint32) (uint32, []byte, uint64, u
 	var referredTime uint64
 	err := postgres.QueryRow(`SELECT data_id, meta_binary, created_time, updated_time, period, flag, referred_time FROM pretendo_badge_arcade.free_play_data WHERE owner_id=$1`, ownerID).Scan(&dataID, &metaBinary, &createdTime, &updatedTime, &period, &flag, &referredTime)
 	if err != nil && err != sql.ErrNoRows {
-		log.Fatal(err)
+		globals.Logger.Error(err.Error())
 	}
 
 	return dataID, metaBinary, createdTime, updatedTime, period, flag, referredTime

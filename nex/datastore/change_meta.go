@@ -11,12 +11,11 @@ import (
 )
 
 func ChangeMeta(err error, client *nex.Client, callID uint32, param *datastore.DataStoreChangeMetaParam) {
-	// TODO: This doesn't seem right
 	switch param.DataType {
-	case 0: // Free Play Data?
+	case 0: // Free Play Data
 		utility.ChangeFreePlayDataMeta(param.DataID, param.MetaBinary)
 	default:
-		fmt.Println("WARNING: Unknown DataType: %d", param.DataType)
+		globals.Logger.Error(fmt.Sprintf("Unknown DataType: %d", param.DataType))
 	}
 
 	rmcResponse := nex.NewRMCResponse(datastore.ProtocolID, callID)

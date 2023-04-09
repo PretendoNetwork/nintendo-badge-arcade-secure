@@ -2,11 +2,10 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
-	"log"
 	"os"
 
 	_ "github.com/lib/pq"
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
 )
 
 var postgres *sql.DB
@@ -18,14 +17,19 @@ func connectPostgres() {
 
 	postgres, err = sql.Open("postgres", os.Getenv("DATABASE_URI"))
 	if err != nil {
-		panic(err)
+		globals.Logger.Critical(err.Error())
+		return
 	}
+
+	globals.Logger.Success("Connected to Postgres!")
 
 	_, err = postgres.Exec(`CREATE SCHEMA IF NOT EXISTS pretendo_badge_arcade`)
 	if err != nil {
-		fmt.Println("pretendo_badge_arcade")
-		log.Fatal(err)
+		globals.Logger.Critical(err.Error())
+		return
 	}
+
+	globals.Logger.Success("Postgres schema created")
 
 	// Create tables if missing
 
@@ -40,8 +44,8 @@ func connectPostgres() {
 			referred_time bigint
 		)`)
 	if err != nil {
-		fmt.Println("pretendo_badge_arcade.free_play_data")
-		log.Fatal(err)
+		globals.Logger.Critical(err.Error())
+		return
 	}
 
 	_, err = postgres.Exec(`CREATE TABLE IF NOT EXISTS pretendo_badge_arcade.user_play_info (
@@ -51,9 +55,9 @@ func connectPostgres() {
 		version int
 	)`)
 	if err != nil {
-		fmt.Println("pretendo_badge_arcade.user_play_info")
-		log.Fatal(err)
+		globals.Logger.Critical(err.Error())
+		return
 	}
 
-	fmt.Println("Connected to Postgres")
+	globals.Logger.Success("Postgres tables created")
 }

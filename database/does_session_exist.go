@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,7 +17,8 @@ func DoesSessionExist(pid uint32) bool {
 		if err == mongo.ErrNoDocuments {
 			return false
 		} else {
-			panic(err)
+			globals.Logger.Error(err.Error())
+			return false
 		}
 	} else {
 		return true

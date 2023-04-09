@@ -1,6 +1,8 @@
 package nex_datastore
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/badge-arcade-secure/database"
 	"github.com/PretendoNetwork/badge-arcade-secure/globals"
 	"github.com/PretendoNetwork/badge-arcade-secure/utility"
@@ -16,6 +18,8 @@ func PostMetaBinary(err error, client *nex.Client, callID uint32, param *datasto
 	switch param.DataType {
 	case 100: // Free Play Data
 		utility.DataStorePostParamToFreePlayData(pid, param)
+	default:
+		globals.Logger.Error(fmt.Sprintf("Unknown DataType: %d", param.DataType))
 	}
 
 	database.PostUserPlayInfo(pid, pid, slot)

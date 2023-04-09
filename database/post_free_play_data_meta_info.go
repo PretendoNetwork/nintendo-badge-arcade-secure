@@ -1,6 +1,6 @@
 package database
 
-import "log"
+import "github.com/PretendoNetwork/badge-arcade-secure/globals"
 
 func PostFreePlayDataMetaInfo(dataID uint32, ownerID uint32, metaBinary []byte, createdTime uint64, period uint16, flag uint32) {
 	var err error
@@ -25,6 +25,6 @@ func PostFreePlayDataMetaInfo(dataID uint32, ownerID uint32, metaBinary []byte, 
 		$4
 	) ON CONFLICT DO NOTHING`, dataID, ownerID, metaBinary, createdTime, period, flag)
 	if err != nil {
-		log.Fatal(err)
+		globals.Logger.Error(err.Error())
 	}
 }
