@@ -1,28 +1,31 @@
-package main
+package nex_datastore
 
 import (
+	"github.com/PretendoNetwork/badge-arcade-secure/database"
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+
 	nex "github.com/PretendoNetwork/nex-go"
-	nexproto "github.com/PretendoNetwork/nex-protocols-go"
+	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
 
-func getPersistenceInfo(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16) {
-	dataID := getDataStorePersistenceInfo(ownerID, persistenceSlotID)
-	
-	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
+func GetPersistenceInfo(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16) {
+	dataID := database.GetDataStorePersistenceInfo(ownerID, persistenceSlotID)
+
+	rmcResponse := nex.NewRMCResponse(datastore.ProtocolID, callID)
 
 	if dataID != 0 {
-		pPersistenceInfo := nexproto.NewDataStorePersistenceInfo()
+		pPersistenceInfo := datastore.NewDataStorePersistenceInfo()
 		pPersistenceInfo.OwnerID = ownerID
 		pPersistenceInfo.PersistenceSlotID = persistenceSlotID
 		pPersistenceInfo.DataID = dataID
 
-		rmcResponseStream := nex.NewStreamOut(nexServer)
+		rmcResponseStream := nex.NewStreamOut(globals.NEXServer)
 
 		rmcResponseStream.WriteStructure(pPersistenceInfo)
 
 		rmcResponseBody := rmcResponseStream.Bytes()
 
-		rmcResponse.SetSuccess(nexproto.DataStoreMethodGetPersistenceInfo, rmcResponseBody)
+		rmcResponse.SetSuccess(datastore.MethodGetPersistenceInfo, rmcResponseBody)
 	} else {
 		rmcResponse.SetError(nex.Errors.DataStore.NotFound)
 	}
@@ -40,5 +43,5 @@ func getPersistenceInfo(err error, client *nex.Client, callID uint32, ownerID ui
 	responsePacket.AddFlag(nex.FlagNeedsAck)
 	responsePacket.AddFlag(nex.FlagReliable)
 
-	nexServer.Send(responsePacket)
+	globals.NEXServer.Send(responsePacket)
 }

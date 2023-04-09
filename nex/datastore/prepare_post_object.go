@@ -1,50 +1,53 @@
-package main
+package nex_datastore
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/PretendoNetwork/badge-arcade-secure/database"
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+
 	nex "github.com/PretendoNetwork/nex-go"
-	nexproto "github.com/PretendoNetwork/nex-protocols-go"
+	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
 
-func preparePostObject(err error, client *nex.Client, callID uint32, param *nexproto.DataStorePreparePostParam) {
+func PreparePostObject(err error, client *nex.Client, callID uint32, param *datastore.DataStorePreparePostParam) {
 	pid := client.PID()
 	var slot uint16 = 0
 
-	dataID := getDataStorePersistenceInfo(pid, slot)
+	dataID := database.GetDataStorePersistenceInfo(pid, slot)
 	var initialVersion uint32 = 1
-	
-	pReqPostInfo := nexproto.NewDataStoreReqPostInfo()
+
+	pReqPostInfo := datastore.NewDataStoreReqPostInfo()
 
 	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, initialVersion)
 
-	fieldKey := nexproto.NewDataStoreKeyValue()
+	fieldKey := datastore.NewDataStoreKeyValue()
 	fieldKey.Key = "key"
 	fieldKey.Value = key
 
-	fieldACL := nexproto.NewDataStoreKeyValue()
+	fieldACL := datastore.NewDataStoreKeyValue()
 	fieldACL.Key = "acl"
 	fieldACL.Value = "private"
 
-	fieldSignature := nexproto.NewDataStoreKeyValue()
+	fieldSignature := datastore.NewDataStoreKeyValue()
 	fieldSignature.Key = "signature"
 	fieldSignature.Value = "signature" // TODO
 
 	pReqPostInfo.DataID = dataID
 	pReqPostInfo.URL = fmt.Sprintf("http://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
-	pReqPostInfo.RequestHeaders = []*nexproto.DataStoreKeyValue{}
-	pReqPostInfo.FormFields = []*nexproto.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}
+	pReqPostInfo.RequestHeaders = []*datastore.DataStoreKeyValue{}
+	pReqPostInfo.FormFields = []*datastore.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}
 	pReqPostInfo.RootCACert = []byte{}
 
-	rmcResponseStream := nex.NewStreamOut(nexServer)
+	rmcResponseStream := nex.NewStreamOut(globals.NEXServer)
 
 	rmcResponseStream.WriteStructure(pReqPostInfo)
 
 	rmcResponseBody := rmcResponseStream.Bytes()
 
-	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.DataStoreMethodPreparePostObject, rmcResponseBody)
+	rmcResponse := nex.NewRMCResponse(datastore.ProtocolID, callID)
+	rmcResponse.SetSuccess(datastore.MethodPreparePostObject, rmcResponseBody)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 
@@ -59,5 +62,5 @@ func preparePostObject(err error, client *nex.Client, callID uint32, param *nexp
 	responsePacket.AddFlag(nex.FlagNeedsAck)
 	responsePacket.AddFlag(nex.FlagReliable)
 
-	nexServer.Send(responsePacket)
+	globals.NEXServer.Send(responsePacket)
 }

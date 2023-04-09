@@ -1,20 +1,23 @@
-package main
+package nex_datastore
 
 import (
+	"github.com/PretendoNetwork/badge-arcade-secure/database"
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+
 	nex "github.com/PretendoNetwork/nex-go"
-	nexproto "github.com/PretendoNetwork/nex-protocols-go"
+	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
 
-func completePostObject(err error, client *nex.Client, callID uint32, param *nexproto.DataStoreCompletePostParam) {
+func CompletePostObject(err error, client *nex.Client, callID uint32, param *datastore.DataStoreCompletePostParam) {
 	// We update the version only if the post has been successful
 	// This is done in order to prevent incomplete saves
 	if param.IsSuccess {
 		var initialVersion uint32 = 1
-		updateUserPlayInfoVersion(param.DataID, initialVersion)
+		database.UpdateUserPlayInfoVersion(param.DataID, initialVersion)
 	}
 
-	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.DataStoreMethodCompletePostObject, nil)
+	rmcResponse := nex.NewRMCResponse(datastore.ProtocolID, callID)
+	rmcResponse.SetSuccess(datastore.MethodCompletePostObject, nil)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 
@@ -29,5 +32,5 @@ func completePostObject(err error, client *nex.Client, callID uint32, param *nex
 	responsePacket.AddFlag(nex.FlagNeedsAck)
 	responsePacket.AddFlag(nex.FlagReliable)
 
-	nexServer.Send(responsePacket)
+	globals.NEXServer.Send(responsePacket)
 }

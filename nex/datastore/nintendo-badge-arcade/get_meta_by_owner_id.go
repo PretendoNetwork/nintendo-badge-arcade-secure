@@ -1,25 +1,29 @@
-package main
+package nex_datastore_nintendo_badge_arcade
 
 import (
 	"fmt"
 
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/badge-arcade-secure/utility"
+
 	nex "github.com/PretendoNetwork/nex-go"
-	nexproto "github.com/PretendoNetwork/nex-protocols-go"
+	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore_nintendo_badge_arcade "github.com/PretendoNetwork/nex-protocols-go/datastore/nintendo-badge-arcade"
 )
 
-func getMetaByOwnerId(err error, client *nex.Client, callID uint32, param *nexproto.DataStoreGetMetaByOwnerIdParam) {
-	pMetaInfo := make([]*nexproto.DataStoreMetaInfo, 0)
+func GetMetaByOwnerID(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade.DataStoreGetMetaByOwnerIDParam) {
+	pMetaInfo := make([]*datastore.DataStoreMetaInfo, 0)
 	var pHasNext bool = false // Unknown
 
 	if len(param.OwnerIDs) != len(param.DataTypes) {
 		// Not sure if this is possible in the first place
 		fmt.Println("WARNING: Owner ID and DataType length mismatch")
 	}
-	
+
 	for i, _ := range param.OwnerIDs {
 		switch param.DataTypes[i] {
 		case 100: // Free Play Data
-			freePlayDataMetaInfo := freePlayDataToDataStoreMetaInfo(param.OwnerIDs[i], param.DataTypes[i])
+			freePlayDataMetaInfo := utility.FreePlayDataToDataStoreMetaInfo(param.OwnerIDs[i], param.DataTypes[i])
 			if freePlayDataMetaInfo != nil {
 				pMetaInfo = append(pMetaInfo, freePlayDataMetaInfo)
 			}
@@ -28,15 +32,15 @@ func getMetaByOwnerId(err error, client *nex.Client, callID uint32, param *nexpr
 		}
 	}
 
-	rmcResponseStream := nex.NewStreamOut(nexServer)
+	rmcResponseStream := nex.NewStreamOut(globals.NEXServer)
 
 	rmcResponseStream.WriteListStructure(pMetaInfo)
 	rmcResponseStream.WriteBool(pHasNext)
 
 	rmcResponseBody := rmcResponseStream.Bytes()
 
-	rmcResponse := nex.NewRMCResponse(nexproto.DataStoreBadgeArcadeProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.DataStoreBadgeArcadeMethodGetMetaByOwnerId, rmcResponseBody)
+	rmcResponse := nex.NewRMCResponse(datastore_nintendo_badge_arcade.ProtocolID, callID)
+	rmcResponse.SetSuccess(datastore_nintendo_badge_arcade.MethodGetMetaByOwnerID, rmcResponseBody)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 
@@ -51,5 +55,5 @@ func getMetaByOwnerId(err error, client *nex.Client, callID uint32, param *nexpr
 	responsePacket.AddFlag(nex.FlagNeedsAck)
 	responsePacket.AddFlag(nex.FlagReliable)
 
-	nexServer.Send(responsePacket)
+	globals.NEXServer.Send(responsePacket)
 }

@@ -1,17 +1,19 @@
-package main
+package nex_secure_connection_nintendo_badge_arcade
 
 import (
+	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	secure_connection_nintendo_badge_arcade "github.com/PretendoNetwork/nex-protocols-go/secure-connection/nintendo-badge-arcade"
+
 	nex "github.com/PretendoNetwork/nex-go"
-	nexproto "github.com/PretendoNetwork/nex-protocols-go"
 )
 
-func getMaintenanceStatus(err error, client *nex.Client, callID uint32) {
+func GetMaintenanceStatus(err error, client *nex.Client, callID uint32) {
 	// TODO: Don't use hardcoded variables
 	var maintenanceStatus uint16 = 0xFFFF
 	var maintenanceTime uint32 = 0 // Time of maintenance in Unix time (I think)
 	var isSuccess bool = true
 
-	rmcResponseStream := nex.NewStreamOut(nexServer)
+	rmcResponseStream := nex.NewStreamOut(globals.NEXServer)
 
 	rmcResponseStream.WriteUInt16LE(maintenanceStatus)
 	rmcResponseStream.WriteUInt32LE(maintenanceTime)
@@ -19,8 +21,8 @@ func getMaintenanceStatus(err error, client *nex.Client, callID uint32) {
 
 	rmcResponseBody := rmcResponseStream.Bytes()
 
-	rmcResponse := nex.NewRMCResponse(nexproto.SecureBadgeArcadeProtocolID, callID)
-	rmcResponse.SetSuccess(nexproto.SecureBadgeArcadeMethodGetMaintenanceStatus, rmcResponseBody)
+	rmcResponse := nex.NewRMCResponse(secure_connection_nintendo_badge_arcade.ProtocolID, callID)
+	rmcResponse.SetSuccess(secure_connection_nintendo_badge_arcade.MethodGetMaintenanceStatus, rmcResponseBody)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 
@@ -35,5 +37,5 @@ func getMaintenanceStatus(err error, client *nex.Client, callID uint32) {
 	responsePacket.AddFlag(nex.FlagNeedsAck)
 	responsePacket.AddFlag(nex.FlagReliable)
 
-	nexServer.Send(responsePacket)
+	globals.NEXServer.Send(responsePacket)
 }
