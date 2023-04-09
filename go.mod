@@ -8,6 +8,7 @@ require (
 	github.com/PretendoNetwork/plogger-go v1.0.2
 	github.com/aws/aws-sdk-go v1.44.239
 	github.com/joho/godotenv v1.5.1
+	github.com/lib/pq v1.10.7
 	go.mongodb.org/mongo-driver v1.11.4
 )
 
