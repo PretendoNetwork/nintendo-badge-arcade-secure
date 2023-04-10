@@ -3,8 +3,8 @@ package nex_secure_connection
 import (
 	"strconv"
 
-	"github.com/PretendoNetwork/badge-arcade-secure/database"
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/database"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 	secure_connection "github.com/PretendoNetwork/nex-protocols-go/secure-connection"
 
 	nex "github.com/PretendoNetwork/nex-go"

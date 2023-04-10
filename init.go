@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/PretendoNetwork/badge-arcade-secure/database"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/database"
 	"github.com/PretendoNetwork/plogger-go"
 	"github.com/joho/godotenv"
 )

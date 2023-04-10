@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 )
 
 func UpdatePlayerSessionPort(pid uint32, port string) {

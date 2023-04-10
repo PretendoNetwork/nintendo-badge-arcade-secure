@@ -1,7 +1,7 @@
 package utility
 
 import (
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 )

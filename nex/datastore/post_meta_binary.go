@@ -3,9 +3,9 @@ package nex_datastore
 import (
 	"fmt"
 
-	"github.com/PretendoNetwork/badge-arcade-secure/database"
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
-	"github.com/PretendoNetwork/badge-arcade-secure/utility"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/database"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/utility"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"

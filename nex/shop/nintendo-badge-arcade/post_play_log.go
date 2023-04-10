@@ -1,7 +1,7 @@
 package nex_shop_nintendo_badge_arcade
 
 import (
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	nexproto "github.com/PretendoNetwork/nex-protocols-go/shop/nintendo-badge-arcade"

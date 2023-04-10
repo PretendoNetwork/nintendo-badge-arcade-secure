@@ -1,4 +1,4 @@
-module github.com/PretendoNetwork/badge-arcade-secure
+module github.com/PretendoNetwork/nintendo-badge-arcade-secure
 
 go 1.19
 

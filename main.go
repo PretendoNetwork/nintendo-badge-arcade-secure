@@ -3,7 +3,7 @@ package main
 import (
 	"sync"
 
-	"github.com/PretendoNetwork/badge-arcade-secure/nex"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/nex"
 )
 
 var wg sync.WaitGroup

@@ -1,7 +1,7 @@
 package prudp
 
 import (
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 
 	"github.com/PretendoNetwork/nex-go"
 )

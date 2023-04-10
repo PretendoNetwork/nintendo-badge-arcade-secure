@@ -1,6 +1,6 @@
 package database
 
-import "github.com/PretendoNetwork/badge-arcade-secure/globals"
+import "github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 
 func PostFreePlayDataMetaInfo(dataID uint32, ownerID uint32, metaBinary []byte, createdTime uint64, period uint16, flag uint32) {
 	var err error

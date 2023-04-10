@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 )
 
 func GetFreePlayDataMetaInfoByOwnerID(ownerID uint32) (uint32, []byte, uint64, uint64, uint16, uint32, uint64) {

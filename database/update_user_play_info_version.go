@@ -1,6 +1,6 @@
 package database
 
-import "github.com/PretendoNetwork/badge-arcade-secure/globals"
+import "github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 
 func UpdateUserPlayInfoVersion(dataID uint32, version uint32) {
 	var err error

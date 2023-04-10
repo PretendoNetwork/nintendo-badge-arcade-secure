@@ -1,6 +1,6 @@
 package database
 
-import "github.com/PretendoNetwork/badge-arcade-secure/globals"
+import "github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 
 func GetVersionByDataID(dataID uint32) uint32 {
 	var version uint32

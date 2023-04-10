@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"github.com/PretendoNetwork/badge-arcade-secure/globals"
+	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 )
 
 func GetDataStorePersistenceInfo(ownerID uint32, persistenceSlotID uint16) uint32 {
