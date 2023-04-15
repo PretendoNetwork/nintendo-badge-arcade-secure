@@ -34,4 +34,5 @@ func registerNEXProtocols() {
 	shopNintendoBadgeArcadePrococol := shop_nintendo_badge_arcade.NewShopNintendoBadgeArcadeProtocol(globals.NEXServer)
 
 	shopNintendoBadgeArcadePrococol.PostPlayLog(nex_shop_nintendo_badge_arcade.PostPlayLog)
+	shopNintendoBadgeArcadePrococol.GetRivToken(nex_shop_nintendo_badge_arcade.GetRivToken)
 }
