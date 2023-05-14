@@ -8,26 +8,10 @@ import (
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/prudp"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/PretendoNetwork/nex-go"
 )
 
 func StartNEXServer() {
-	key := os.Getenv("S3_KEY")
-	secret := os.Getenv("S3_SECRET")
-
-	s3Config := &aws.Config{
-		Credentials: credentials.NewStaticCredentials(key, secret, ""),
-		Endpoint:    aws.String("http://" + os.Getenv("DATASTORE_DATA_URL")),
-		Region:      aws.String("us-east-1"),
-	}
-
-	newSession, _ := session.NewSession(s3Config)
-	globals.S3Client = s3.New(newSession)
-
 	globals.NEXServer = nex.NewServer()
 	globals.NEXServer.SetPRUDPVersion(1)
 	globals.NEXServer.SetPRUDPProtocolMinorVersion(3)

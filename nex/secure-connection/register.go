@@ -7,7 +7,7 @@ import (
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 	secure_connection "github.com/PretendoNetwork/nex-protocols-go/secure-connection"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go"
 )
 
 func Register(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL) {

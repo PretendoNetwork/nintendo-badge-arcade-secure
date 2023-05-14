@@ -4,7 +4,7 @@ import (
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 	secure_connection_nintendo_badge_arcade "github.com/PretendoNetwork/nex-protocols-go/secure-connection/nintendo-badge-arcade"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go"
 )
 
 func GetMaintenanceStatus(err error, client *nex.Client, callID uint32) {

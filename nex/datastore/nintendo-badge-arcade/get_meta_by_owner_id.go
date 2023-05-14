@@ -6,7 +6,7 @@ import (
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/utility"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 	datastore_nintendo_badge_arcade "github.com/PretendoNetwork/nex-protocols-go/datastore/nintendo-badge-arcade"
 )

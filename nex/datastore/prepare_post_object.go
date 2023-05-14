@@ -3,12 +3,13 @@ package nex_datastore
 import (
 	"fmt"
 	"os"
+	"time"
+
+	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/database"
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
-
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
 
 func PreparePostObject(err error, client *nex.Client, callID uint32, param *datastore.DataStorePreparePostParam) {
@@ -16,28 +17,60 @@ func PreparePostObject(err error, client *nex.Client, callID uint32, param *data
 	var slot uint16 = 0
 
 	dataID := database.GetDataStorePersistenceInfo(pid, slot)
-	var initialVersion uint32 = 1
 
-	pReqPostInfo := datastore.NewDataStoreReqPostInfo()
+	bucket := os.Getenv("PN_NBA_CONFIG_S3_BUCKET")
+	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("PN_NBA_CONFIG_S3_PATH"), dataID, 1)
 
-	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataID, initialVersion)
+	input := &globals.PostObjectInput{
+		Bucket:    bucket,
+		Key:       key,
+		ExpiresIn: time.Minute * 15,
+	}
+
+	res, _ := globals.S3PresignClient.PresignPostObject(input)
 
 	fieldKey := datastore.NewDataStoreKeyValue()
 	fieldKey.Key = "key"
 	fieldKey.Value = key
 
-	fieldACL := datastore.NewDataStoreKeyValue()
-	fieldACL.Key = "acl"
-	fieldACL.Value = "private"
+	fieldCredential := datastore.NewDataStoreKeyValue()
+	fieldCredential.Key = "X-Amz-Credential"
+	fieldCredential.Value = res.Credential
+
+	fieldSecurityToken := datastore.NewDataStoreKeyValue()
+	fieldSecurityToken.Key = "X-Amz-Security-Token"
+	fieldSecurityToken.Value = ""
+
+	fieldAlgorithm := datastore.NewDataStoreKeyValue()
+	fieldAlgorithm.Key = "X-Amz-Algorithm"
+	fieldAlgorithm.Value = "AWS4-HMAC-SHA256"
+
+	fieldDate := datastore.NewDataStoreKeyValue()
+	fieldDate.Key = "X-Amz-Date"
+	fieldDate.Value = res.Date
+
+	fieldPolicy := datastore.NewDataStoreKeyValue()
+	fieldPolicy.Key = "policy"
+	fieldPolicy.Value = res.Policy
 
 	fieldSignature := datastore.NewDataStoreKeyValue()
-	fieldSignature.Key = "signature"
-	fieldSignature.Value = "signature" // TODO
+	fieldSignature.Key = "X-Amz-Signature"
+	fieldSignature.Value = res.Signature
+
+	pReqPostInfo := datastore.NewDataStoreReqPostInfo()
 
 	pReqPostInfo.DataID = uint64(dataID)
-	pReqPostInfo.URL = fmt.Sprintf("http://%s.%s/", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"))
+	pReqPostInfo.URL = res.URL
 	pReqPostInfo.RequestHeaders = []*datastore.DataStoreKeyValue{}
-	pReqPostInfo.FormFields = []*datastore.DataStoreKeyValue{fieldKey, fieldACL, fieldSignature}
+	pReqPostInfo.FormFields = []*datastore.DataStoreKeyValue{
+		fieldKey,
+		fieldCredential,
+		fieldSecurityToken,
+		fieldAlgorithm,
+		fieldDate,
+		fieldPolicy,
+		fieldSignature,
+	}
 	pReqPostInfo.RootCACert = []byte{}
 
 	rmcResponseStream := nex.NewStreamOut(globals.NEXServer)

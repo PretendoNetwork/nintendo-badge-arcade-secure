@@ -2,7 +2,7 @@ package utility
 
 import (
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/database"
-	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
 

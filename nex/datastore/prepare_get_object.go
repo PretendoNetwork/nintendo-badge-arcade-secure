@@ -6,9 +6,8 @@ import (
 
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/database"
 	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/globals"
-	"github.com/PretendoNetwork/nintendo-badge-arcade-secure/utility"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
 
@@ -17,10 +16,13 @@ func PrepareGetObject(err error, client *nex.Client, callID uint32, dataStorePre
 
 	dataVersion := database.GetVersionByDataID(uint32(dataStorePrepareGetParam.DataID))
 
-	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("DATASTORE_DATA_PATH"), dataStorePrepareGetParam.DataID, dataVersion)
-	dataSize, _ := utility.S3ObjectSize(os.Getenv("S3_BUCKET_NAME"), key)
+	key := fmt.Sprintf("%s/%011d-%05d", os.Getenv("PN_NBA_CONFIG_S3_PATH"), dataStorePrepareGetParam.DataID, dataVersion)
+	dataSize, err := globals.S3ObjectSize(os.Getenv("PN_NBA_CONFIG_S3_BUCKET"), key)
+	if err != nil {
+		globals.Logger.Error(err.Error())
+	}
 
-	pReqGetInfo.URL = fmt.Sprintf("http://%s.%s/%s", os.Getenv("S3_BUCKET_NAME"), os.Getenv("DATASTORE_DATA_URL"), key)
+	pReqGetInfo.URL = fmt.Sprintf("%s/%s", os.Getenv("PN_NBA_CONFIG_S3_ENDPOINT"), key)
 	pReqGetInfo.RequestHeaders = []*datastore.DataStoreKeyValue{}
 	pReqGetInfo.Size = uint32(dataSize)
 	pReqGetInfo.RootCA = []byte{}
